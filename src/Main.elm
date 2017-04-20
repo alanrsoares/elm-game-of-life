@@ -15,7 +15,8 @@ init =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
-    
+
+
 
 -- MAIN
 
