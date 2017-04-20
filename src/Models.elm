@@ -1,30 +1,42 @@
 module Models exposing (..)
 
-import RemoteData exposing (WebData)
+
+grid : Int -> Grid
+grid length =
+  let
+    range = List.range 0 length
+  in
+    range
+      |> List.map (\x ->
+        range
+          |> List.map (\y ->
+            Cell x y Dead))
 
 
 type alias Model =
-    { players : WebData (List Player)
-    }
+  { grid : Grid
+  , gridControls : String
+  }
 
 
 initialModel : Model
 initialModel =
-    { players = RemoteData.Loading
-    }
-
-type alias PlayerId =
-    String
+  { grid = grid 30
+  , gridControls = ""
+  }
 
 
-type alias Player =
-    { id : PlayerId
-    , name : String
-    , level : Int
-    }
+type CellState
+  = Dead
+  | Alive
 
 
-type Route
-    = PlayersRoute
-    | PlayerRoute PlayerId
-    | NotFoundRoute
+type alias Cell =
+  { x : Int
+  , y : Int
+  , state: CellState
+  }
+
+
+type alias Grid =
+  List (List Cell)

@@ -6,8 +6,7 @@
   "scripts": {
     "api": "node api.js",
     "build": "webpack",
-    "client": "webpack-dev-server --port 3000",
-    "start": "nf start"
+    "start": "webpack-dev-server --port 3000"
   },
   "repository": {},
   "author": "Alan Soares <alanrsoars@gmail.com>",
