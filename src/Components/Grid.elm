@@ -1,32 +1,55 @@
 module Components.Grid exposing (..)
 
 import Html exposing (Html, Attribute, div, text)
-import Html.Attributes exposing (class)
-import Models exposing (Grid, Cell)
+import Html.Attributes exposing (class, style)
+import Html.Events exposing (onClick)
+import Models exposing (Grid)
+import Array exposing (Array)
+import Msgs exposing (Msg)
 
 
-mapToDivWithClass : String -> (a -> Html msg) -> List a -> Html msg
+mapToDivWithClass : String -> (a -> Html msg) -> Array a -> Html msg
 mapToDivWithClass cls f xs =
-    div [ class cls ] (List.map f xs)
+    div [ class cls ] ((Array.map f xs) |> Array.toList)
 
 
-renderCell : Cell -> Html x
-renderCell cell =
-    div
-        [ class "grid-tile" ]
+cellStyle : Bool -> List ( String, String )
+cellStyle alive =
+    if alive then
+        [ ( "background-color", "#FFF" ) ]
+    else
         []
 
 
-renderRow : List Cell -> Html x
-renderRow =
-    mapToDivWithClass "grid-row" renderCell
+renderCell : Int -> Int -> Bool -> Html Msg
+renderCell y x alive =
+    div
+        [ class "grid-tile"
+        , style (cellStyle alive)
+        , onClick (Msgs.Toggle ( ( y, x ), alive ))
+        ]
+        []
 
 
-renderGrid : List (List Cell) -> Html x
-renderGrid =
-    mapToDivWithClass "grid" renderRow
+mapArrayToLlist : (Int -> a -> b) -> Array a -> List b
+mapArrayToLlist f xs =
+    Array.indexedMap f xs
+        |> Array.toList
 
 
-view : Grid -> Html x
-view =
-    renderGrid
+renderRows : Int -> Array Bool -> Html Msg
+renderRows y row =
+    div
+        [ class "grid-row" ]
+        (row
+            |> mapArrayToLlist (renderCell y)
+        )
+
+
+view : Grid -> Html Msg
+view grid =
+    div
+        [ class "grid" ]
+        (grid
+            |> mapArrayToLlist renderRows
+        )

@@ -2,19 +2,20 @@ module Components.GridControls exposing (..)
 
 import Html exposing (Html, div, text, button, label, input, i)
 import Html.Attributes exposing (class, style, type_, id, value)
-import Models exposing (Grid, Cell)
+import Html.Events exposing (onClick)
+import Msgs exposing (Msg)
 
 
-view : String -> Html x
+view : String -> Html Msg
 view grid =
     div
         [ class "grid-controls" ]
         [ div
-            [ class "btn-group"
-            , style [ ( "margin-bottom", "20px" ) ]
-            ]
+            [ class "btn-group grid-controls-buttons" ]
             [ button
-                [ class "btn btn-danger" ]
+                [ class "btn btn-danger"
+                , onClick Msgs.Reset
+                ]
                 [ text "RESET" ]
             , button
                 [ class "btn btn-success" ]
