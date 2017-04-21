@@ -46,12 +46,12 @@ makeGrid length =
 
 newKey : Int -> Int -> Int
 newKey size key =
-    case key of
-        (-1) ->
-            size - 1
-
-        size ->
-            0
+    if key == -1 then
+        size - 1
+    else if key == size then
+        0
+    else
+        key
 
 
 newCoords : Int -> Coords -> Coords
@@ -82,14 +82,6 @@ combinePositions ( y, x ) =
             |> remove ( y, x )
 
 
-willLive : Bool -> Int -> Bool
-willLive alive neighbours =
-    if alive then
-        2 <= neighbours && neighbours <= 3
-    else
-        3 == neighbours
-
-
 getIn : Grid -> Coords -> Bool
 getIn grid ( y, x ) =
     Array.get y grid
@@ -109,5 +101,26 @@ countNeighbours grid ( y, x ) =
                 (\p ->
                     getIn grid (newCoords s p)
                 )
-            |> List.filter identity
+            |> List.filter (\x -> x == True)
             |> List.length
+
+
+willLive : Bool -> Int -> Bool
+willLive alive neighbours =
+    if alive then
+        2 <= neighbours && neighbours <= 3
+    else
+        3 == neighbours
+
+
+nextGeneration : Grid -> Grid
+nextGeneration grid =
+    grid
+        |> Array.indexedMap
+            (\y row ->
+                row
+                    |> Array.indexedMap
+                        (\x cell ->
+                            willLive cell (countNeighbours grid ( y, x ))
+                        )
+            )

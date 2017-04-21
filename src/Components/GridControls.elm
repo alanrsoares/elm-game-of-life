@@ -21,7 +21,9 @@ view grid =
                 [ class "btn btn-success" ]
                 [ text "RANDOMIZE" ]
             , button
-                [ class "btn btn-default" ]
+                [ class "btn btn-default"
+                , onClick Msgs.Tick
+                ]
                 [ i [ class "fa fa-fast-forward fa-lg" ] []
                 , text " NEXT"
                 ]

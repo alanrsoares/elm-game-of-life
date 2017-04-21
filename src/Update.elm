@@ -1,8 +1,16 @@
 module Update exposing (..)
 
-import Msgs exposing (Msg(..))
-import Models exposing (Model, Grid, Coords, makeGrid, initialModel)
 import Array exposing (Array)
+import Msgs exposing (Msg(..))
+import Models
+    exposing
+        ( Model
+        , Grid
+        , Coords
+        , makeGrid
+        , nextGeneration
+        , initialModel
+        )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -18,7 +26,11 @@ update msg model =
             ( model, Cmd.none )
 
         Tick ->
-            ( model, Cmd.none )
+            ( { model
+                | grid = nextGeneration model.grid
+              }
+            , Cmd.none
+            )
 
         Toggle ( coords, alive ) ->
             ( { model
