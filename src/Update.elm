@@ -6,11 +6,20 @@ import Models
     exposing
         ( Model
         , Grid
+        , GridControls
         , Coords
         , makeGrid
         , nextGeneration
         , initialModel
         )
+
+
+toggleAutoPlay : GridControls -> GridControls
+toggleAutoPlay gridControls =
+    ({ gridControls
+        | autoPlay = not gridControls.autoPlay
+     }
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -35,6 +44,13 @@ update msg model =
         Toggle ( coords, alive ) ->
             ( { model
                 | grid = toggle coords alive model.grid
+              }
+            , Cmd.none
+            )
+
+        ToggleAutoPlay ->
+            ( { model
+                | gridControls = toggleAutoPlay model.gridControls
               }
             , Cmd.none
             )

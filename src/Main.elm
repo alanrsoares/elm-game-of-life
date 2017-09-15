@@ -5,6 +5,7 @@ import Msgs exposing (Msg)
 import Models exposing (Model, initialModel)
 import Update exposing (update)
 import View exposing (view)
+import AnimationFrame
 
 
 init : ( Model, Cmd x )
@@ -14,7 +15,10 @@ init =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    if model.gridControls.autoPlay then
+        AnimationFrame.diffs (always Msgs.Tick)
+    else
+        Sub.none
 
 
 

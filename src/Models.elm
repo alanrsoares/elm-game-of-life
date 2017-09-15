@@ -3,16 +3,23 @@ module Models exposing (..)
 import Array exposing (Array)
 
 
+type alias GridControls =
+    { autoPlay : Bool
+    }
+
+
 type alias Model =
     { grid : Grid
-    , gridControls : String
+    , gridControls : GridControls
     }
 
 
 initialModel : Model
 initialModel =
     { grid = makeGrid 30
-    , gridControls = ""
+    , gridControls =
+        { autoPlay = False
+        }
     }
 
 

@@ -11,3 +11,4 @@ type Msg
     | Toggle ( Coords, Bool )
     | Reset
     | Random
+    | ToggleAutoPlay

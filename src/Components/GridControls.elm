@@ -1,13 +1,22 @@
 module Components.GridControls exposing (..)
 
 import Html exposing (Html, div, text, button, label, input, i)
-import Html.Attributes exposing (class, style, type_, id, value)
+import Html.Attributes exposing (class, style, type_, id, value, checked)
 import Html.Events exposing (onClick)
 import Msgs exposing (Msg)
+import Models
 
 
-view : String -> Html Msg
-view grid =
+getIconClass autoPlay =
+    "fa fa-"
+        ++ if autoPlay then
+            "pause"
+           else
+            "play" ++ " fa-lg"
+
+
+view : Models.GridControls -> Html Msg
+view props =
     div
         [ class "grid-controls" ]
         [ div
@@ -27,11 +36,15 @@ view grid =
                 [ i [ class "fa fa-fast-forward fa-lg" ] []
                 , text " NEXT"
                 ]
-            , label
-                [ class "btn btn-default" ]
-                [ i [ class "fa fa-play fa-lg" ] []
+            , button
+                [ class "btn btn-default"
+                , onClick Msgs.ToggleAutoPlay
+                ]
+                [ i [ class (getIconClass props.autoPlay) ]
+                    []
                 , input
                     [ type_ "checkbox"
+                    , checked props.autoPlay
                     , id ""
                     , value "on"
                     , style [ ( "display", "none" ) ]
