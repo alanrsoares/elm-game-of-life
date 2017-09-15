@@ -9,17 +9,8 @@ import Models
         , GridControls
         , Coords
         , makeGrid
-        , nextGeneration
         , initialModel
         )
-
-
-toggleAutoPlay : GridControls -> GridControls
-toggleAutoPlay gridControls =
-    ({ gridControls
-        | autoPlay = not gridControls.autoPlay
-     }
-    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -73,3 +64,90 @@ toggle ( y, x ) current g =
         y
         (Array.set x (not current) (getRow y g))
         g
+
+
+toggleAutoPlay : GridControls -> GridControls
+toggleAutoPlay gridControls =
+    ({ gridControls
+        | autoPlay = not gridControls.autoPlay
+     }
+    )
+
+
+newKey : Int -> Int -> Int
+newKey size key =
+    if key == -1 then
+        size - 1
+    else if key == size then
+        0
+    else
+        key
+
+
+removeFromList : a -> List a -> List a
+removeFromList x xs =
+    xs |> List.filter (\x_ -> x_ /= x)
+
+
+combinePositions : Coords -> List Coords
+combinePositions ( y, x ) =
+    let
+        offset =
+            [ -1, 0, 1 ]
+
+        flatten y_ =
+            offset |> List.map (combine y_)
+
+        combine y_ x_ =
+            ( y + y_, x + x_ )
+    in
+        offset
+            |> List.concatMap flatten
+            |> removeFromList ( y, x )
+
+
+getIn : Grid -> Coords -> Bool
+getIn grid ( y, x ) =
+    Array.get y grid
+        |> Maybe.withDefault (Array.fromList [])
+        |> Array.get x
+        |> Maybe.withDefault False
+
+
+getNewCoords : Int -> Coords -> Coords
+getNewCoords size ( y, x ) =
+    ( (newKey size y)
+    , (newKey size x)
+    )
+
+
+countNeighbours : Grid -> Coords -> Int
+countNeighbours grid ( y, x ) =
+    let
+        getPosition p =
+            getIn grid (getNewCoords (Array.length grid) p)
+    in
+        combinePositions ( y, x )
+            |> List.map getPosition
+            |> List.filter identity
+            |> List.length
+
+
+willLive : Bool -> Int -> Bool
+willLive alive neighbourCount =
+    if alive then
+        2 <= neighbourCount && neighbourCount <= 3
+    else
+        3 == neighbourCount
+
+
+nextGeneration : Grid -> Grid
+nextGeneration grid =
+    let
+        mapCell y x cell =
+            willLive cell (countNeighbours grid ( y, x ))
+
+        mapRow y =
+            Array.indexedMap (mapCell y)
+    in
+        grid |> Array.indexedMap mapRow
