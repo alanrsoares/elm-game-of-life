@@ -68,16 +68,15 @@ toggle ( y, x ) current g =
 
 toggleAutoPlay : GridControls -> GridControls
 toggleAutoPlay gridControls =
-    ({ gridControls
+    { gridControls
         | autoPlay = not gridControls.autoPlay
-     }
-    )
+    }
 
 
 newKey : Int -> Int -> Int
 newKey size key =
-    if key == -1 then
-        size - 1
+    if key < 0 then
+        size + key
     else if key == size then
         0
     else
@@ -108,16 +107,17 @@ combinePositions ( y, x ) =
 
 getIn : Grid -> Coords -> Bool
 getIn grid ( y, x ) =
-    Array.get y grid
-        |> Maybe.withDefault (Array.fromList [])
+    grid
+        |> Array.get y
+        |> Maybe.withDefault Array.empty
         |> Array.get x
         |> Maybe.withDefault False
 
 
 getNewCoords : Int -> Coords -> Coords
 getNewCoords size ( y, x ) =
-    ( (newKey size y)
-    , (newKey size x)
+    ( newKey size y
+    , newKey size x
     )
 
 
